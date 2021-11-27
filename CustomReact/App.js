@@ -120,19 +120,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#00000',
+    borderWidth: 1,
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 12,
-    justifyContent: 'flex-start',
   },
   titleRight: {
     fontSize: 12,
-    justifyContent: 'flex-end',
   },
   input: {
     height: 40,
