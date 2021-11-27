@@ -1,111 +1,144 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import type {Node} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  Button,
+  FlatList,
+  TextInput,
 } from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
+import ButtonComp from '../CustomReactProject/src/ButtonComponent/ButtonComponent';
+const keyVal = 'value';
 const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [customList, setCustomList] = useState([]);
+  const [text, setText] = useState();
+  const [number, setNumber] = useState(null);
+  const [list, setList] = useState([]);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  useEffect(() => {
+    console.log(list);
+    setCustomList(list);
+  }, [list]);
+  const handleAdd = (text, number) => {
+    let arr = [];
+    if (text !== null && number !== null) {
+      arr.push(...customList);
+      arr.push({
+        id: customList.length + 1,
+        name: text,
+        value: parseInt(number, 10),
+        date: new Date(),
+      });
+      setCustomList(arr);
+    }
   };
 
+  const Item = ({title, value}) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.titleRight}>{value}</Text>
+    </View>
+  );
+  const renderItem = ({item}) => <Item title={item.name} value={item.value} />;
+
+  const filterIncrease = () => {
+    setList([]);
+    const ascending = customList.sort(SortArrayDesc);
+
+    setTimeout(() => {
+      setList(ascending);
+    }, 100);
+    return ascending;
+  };
+
+  function SortArrayAsc(x, y) {
+    if (x[keyVal] < y[keyVal]) {
+      return -1;
+    }
+    if (x[keyVal] > y[keyVal]) {
+      return 1;
+    }
+    return 0;
+  }
+  const filterDecrease = () => {
+    setList([]);
+    const desc = customList.sort(SortArrayAsc);
+    setTimeout(() => {
+      setList(desc);
+    }, 100);
+    return desc;
+  };
+  function SortArrayDesc(x, y) {
+    if (x[keyVal] > y[keyVal]) {
+      return -1;
+    }
+    if (x[keyVal] < y[keyVal]) {
+      return 1;
+    }
+    return 0;
+  }
+  const filterDate = () => {};
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ButtonComp
+        filterIncrease={filterIncrease}
+        filterDecrease={filterDecrease}
+        filterDate={filterDate}
+      />
+      <FlatList
+        data={customList}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+
+      <View>
+        <Text>{'Name'}</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setText}
+          placeholder="please enter price"
+          value={text}
+        />
+        <Text>{'Price'}</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setNumber}
+          value={number}
+          placeholder="please enter price"
+          keyboardType="numeric"
+        />
+        <Button title="Add" onPress={() => handleAdd(text, number)} />
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 10,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    flexDirection: 'row',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  title: {
+    fontSize: 12,
+    justifyContent: 'flex-start',
   },
-  highlight: {
-    fontWeight: '700',
+  titleRight: {
+    fontSize: 12,
+    justifyContent: 'flex-end',
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });
 
